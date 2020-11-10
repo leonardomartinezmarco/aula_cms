@@ -9,6 +9,11 @@
 * License: CC BY
 */
 
+// Não permite acesso direto ao plugin, neste caso a constante abaixo não vai estar definida
+if ( !defined('WPINC')){
+    die;
+}
+
 // Adicionar menu
 add_action( 'admin_menu', 'gerar_item_menu' );
 

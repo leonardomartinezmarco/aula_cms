@@ -9,10 +9,15 @@
 * License: CC BY
 */
 
+// Não permite acesso direto ao plugin, neste caso a constante abaixo não vai estar definida
+if (!defined('WPINC')){
+    die;
+}
+
 add_action( 'admin_init', 'configs_plugin_menu' );
 
-function configs_plugin_menu ()
-{
+// Utilizando a tabela _options
+function configs_plugin_menu (){
     register_setting( 'configs-plugin-menu', 'url-api-auth' );
     register_setting( 'configs-plugin-menu', 'url-api-endpoint1' );
     register_setting( 'configs-plugin-menu', 'url-api-token' );
@@ -21,8 +26,7 @@ function configs_plugin_menu ()
 
 add_action( 'admin_menu', 'gera_item_no_menu' );
 
-function gera_item_no_menu()
-{
+function gera_item_no_menu(){
     // Exemplo de adicionar novo menu ao menu principal do admmin
     // add_menu_page('Configurações do Plugin Menu'
     //                 , 'Config Plugin Menu'
@@ -41,7 +45,6 @@ function gera_item_no_menu()
                         ,2);
 }
 
-function abre_config_plugin_menu()
-{
+function abre_config_plugin_menu(){
     require 'plugin_menu_configs_frontend.php';
 }
