@@ -1,3 +1,18 @@
+<?php
+    $buscaAtual = "";
+
+    if (isset( $buscar)){
+        if (!empty($buscar)){
+            $buscaAtual =  $buscar;
+        }
+    }    
+?>
+
+<form method="get">
+    <input type="text" placeholder="Buscar" name="termo" value="<?php echo $buscaAtual ?>">
+    <input type="submit" name="buscar" value="GO!">
+</form>
+
 <?php 
     if (count($contatos) > 0){
 

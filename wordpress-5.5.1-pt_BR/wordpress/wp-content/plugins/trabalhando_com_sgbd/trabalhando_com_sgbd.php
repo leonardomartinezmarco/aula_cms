@@ -13,33 +13,33 @@ if (!defined('WPINC')){
     die;
 }
 
-add_action( 'admin_menu', 'gera_item_no_menu' );
+add_action( 'admin_menu', 'gera_item_no_menu');
 
 function gera_item_no_menu(){
     add_menu_page('Configurações SGDB','Config SGDB','administrator','config-plugin-sgbd','abre_config_plugin_menu','dashicons-database' );
 }
 
-function abre_config_plugin_menu(){
+function abre_config_plugin_menu() {
     global $wpdb;
     $tableName = $wpdb->prefix . "AGENDA";
     $msg = "";
     $gravou = "";
 
-    if (isset( $_GET['editar'] ) and !isset( $_POST['ID'])){
-        $ID =  preg_replace('/\D/', '',  $_GET['editar'] );
+    if (isset( $_GET['editar'] ) and !isset( $_POST['ID'])) {
+        $ID =  preg_replace('/\D/', '',  $_GET['editar']);
         $gravou = '';
         $cadastros = $wpdb->get_results(" SELECT * FROM $tableName where id = " . $ID);
         require 'sgbd_digitar_frontend.php';
     }
 
-    if (isset($_GET['apagar']) and !isset( $_POST['nome'])){
-        $ID =  preg_replace('/\D/', '',  $_GET['apagar'] );
-        $wpdb->delete( $tableName, array( 'id' => $ID ) );
-        $wpdb->delete( $tableName, array( 'id' => $ID ) );
+    if (isset($_GET['apagar']) and !isset( $_POST['nome'])) {
+        $ID =  preg_replace('/\D/', '',  $_GET['apagar']);
+        $wpdb->delete( $tableName, array( 'id' => $ID));
+        $wpdb->delete( $tableName, array( 'id' => $ID));
         $msg = 'Apagado com sucesso!';
     }
 
-    if (!isset( $_GET['editar'])){
+    if (!isset( $_GET['editar'])) {
         if ( isset( $_POST['ID_alterar'] ) and isset( $_POST['nome'] ) and isset( $_POST['whatsapp'] ) ){
             $ID = $_POST['ID_alterar'];
             $nome = $_POST['nome'];
@@ -79,7 +79,7 @@ function criar_tabela(){
     $conteudo   = '[tela_dinamica_contatos]';
     $page    = get_page_by_title( $page_title );
 
-    if (!$page){
+    if (!$page) {
         $post = ['post_title'=> $page_title,'post_content'=> $conteudo,'post_status'=> 'publish','post_type'=> 'page','comment_status'=> 'closed','ping_status' => 'closed','post_category'=> [1]];
         
         $page_id = wp_insert_post( $post );
@@ -92,15 +92,25 @@ function criar_tabela(){
     }
 }
 
-add_shortcode( 'tela_dinamica_contatos', 'tela_dinamica' );
+add_shortcode('tela_dinamica_contatos', 'tela_dinamica');
 
-function tela_dinamica(){
+function tela_dinamica() {
+    $buscar = "";
+    $where = "";
+
+    if ( isset( $_GET['termo'])) {
+        $buscar =  $_GET['termo'];
+    }
+
+    if (!empty($buscar)) {
+        $where = " where nome like '%$buscar%' OR whatsapp like '%$buscar%' ";
+    }
+
     global $wpdb;
     $tableName = $wpdb->prefix . "AGENDA";
-    $contatos = $wpdb->get_results(" SELECT * FROM {$wpdb->prefix}AGENDA ");
+    $contatos = $wpdb->get_results(" SELECT * FROM {$wpdb->prefix}AGENDA $where");
     ob_start();
-    include 'sgbd_tela_externa.php';
-    return ob_get_clean();
+
 }
 
 register_deactivation_hook( __FILE__, 'destruir_tabela' );
